@@ -61,8 +61,9 @@ class _HomePageState extends State<HomePagee> {
     return Scaffold(
       backgroundColor: background,
       body: SafeArea(
-        child: loading ? buildLoding()
+        child: loading ? buildLoding() : error != null ? buildError() : buildContent()
         ),
+        bottomNavigationBar: buildBottomNav(),
     );
   }
   Widget buildLoding() => const Center(
@@ -108,7 +109,22 @@ Widget buildContent(){
         const SizedBox(height: 8),
         buildHeader(d),
         const SizedBox(height: 24),
-        sectionlabel('MUNICIPALITY')
+        sectionlabel('MUNICIPALITY'),
+        const SizedBox(height: 10),
+        buildMunicipalityCard(d.municipality),
+        const SizedBox(height: 22),
+        sectionlabel('NEXT WASTE COLLECTION'),
+        const SizedBox(height: 10),
+        buildWasteCard(d.wasteSchedule),
+        const SizedBox(height: 22),
+        sectionlabel('MUNICIPALITY STATISTICS'),
+        const SizedBox(height: 10),
+        buildStatsRow(d.stats),
+        const SizedBox(height: 22),
+        sectionlabel('QUICK ACTIONS'),
+        const SizedBox(height: 10),
+        buildQuickActions(),
+        const SizedBox(height: 24),
       ],
     ),
      );
@@ -195,11 +211,279 @@ Widget buildMunicipalityCard(MunicipalityInfo m){
                 color: green,
                 borderRadius: BorderRadius.circular(14)
               ),
-            )
+              child: const Icon(Icons.account_balance_rounded,color: Colors.white,size: 26),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child:Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(m.name,style: TextStyle(color: text1,fontSize: 16,fontWeight: FontWeight.w800)),
+                  Text(m.nameArabic,style: TextStyle(color: text2,fontSize: 12.5)),
+                  Text(m.district,style: TextStyle(color: text3,fontSize: 11.5)),
+                ],
+              ) 
+              )
+          ],
+        ),
+        const SizedBox(height: 14),
+        const Divider(
+          color: Color(0xFF1E3A24),
+          height: 1,
+        ),
+        const SizedBox(height: 14),
+        Row(
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: m.isOpenNow ? greenLight : red,
+                      shape: BoxShape.circle
+                    ),
+                  ),
+                  const SizedBox(width: 7),
+                  Text(
+                    m.isOpenNow ? 'Open Now': 'Closed',
+                    style: TextStyle(
+                      color: m.isOpenNow ? greenLight : red,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(m.workingHours , style: TextStyle(color: text3,fontSize: 11.5))
+                ],
+              )
+              ),
+              GestureDetector(
+                onTap: ()=>{
+
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16,vertical: 8),
+                  decoration: BoxDecoration(
+                    color: green,
+                    borderRadius: BorderRadius.circular(10)
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.phone_rounded,color: Colors.white,size: 15),
+                      SizedBox(width: 6),
+                      Text('Call',style: TextStyle(color: Colors.white,fontSize: 13,fontWeight: FontWeight.w700),)
+                    ],
+                  ),
+                ),
+              )
           ],
         )
       ],
     ),
   );
+}
+Widget buildWasteCard(WasteScheduleModal ws){
+  final next = ws.nextPickup;
+  return Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: surface,
+      borderRadius: BorderRadius.circular(18),
+      border: Border.all(color: border)
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const Text('Waste Schedule',style: TextStyle(color: text1,fontSize: 15,fontWeight: FontWeight.w800)),
+            const Spacer(),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 4),
+              decoration: BoxDecoration(
+                color: surface2,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: border)
+              ),
+              child: Text(ws.zone,style: TextStyle(color: greenLight,fontSize: 12,fontWeight: FontWeight.w700)),
+            )
+          ],
+        ),
+        const SizedBox(height: 14),
+        const Divider(color: Color(0xFF1E3A24),height: 1,),
+        const SizedBox(height: 14),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 5,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('NEXT PICKUP',style: TextStyle(color: text3,fontSize: 9.5,fontWeight: FontWeight.w800,letterSpacing: 1.2)),
+                  const SizedBox(height: 6),
+                  Text(next?.formattedDate ?? 'No pickup scheduled',style: TextStyle(color: text1,fontSize: 15,fontWeight: FontWeight.w800)),
+                  const SizedBox(height: 3),
+                  Text(next != null ? next.pickupTime.substring(0,5) : 'No schedule set',style: TextStyle(color: text2,fontSize: 12)),
+                ],
+              )
+              ),
+              Expanded(
+                flex: 5,
+                child: buildWeeklyGrid(ws)
+                )
+          ],
+        )
+      ],
+    ),
+  );
+}
+Widget buildWeeklyGrid(WasteScheduleModal ws){
+  if(ws.schedule.isEmpty){
+    return const Text('No schedule',style: TextStyle(color: Color(0xFF5A7A62),fontSize: 12));
+  }
+  final byDay = ws.byDay;
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text('Weekly',style: TextStyle(color: text3,fontSize: 9.5,fontWeight: FontWeight.w800,letterSpacing: 1.2)),
+      const SizedBox(height: 6),
+      ...byDay.entries.map((entry){
+        final dayLabel = entry.key;
+        final entries = entry.value;
+        final times = entries.map((e)=>e.pickupTime.substring(0, 5)).join(',');
+        return Padding(
+          padding:const EdgeInsets.only(bottom: 4),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 30,
+                child: Text(dayLabel,style: TextStyle(color: greenLight,fontSize: 12,fontWeight: FontWeight.w700)),
+                ),
+                Text(times,style: TextStyle(color: text2,fontSize: 12))
+            ],
+          ), 
+          );
+      }),
+    ],
+  );
+}
+Widget buildStatsRow(MunicipalityStats s){
+  return Row(
+    children: [
+      statCard(s.totalRequests.toString(), 'Total Requests', text1),
+      const SizedBox(width: 10),
+      statCard(s.openIssues.toString(), 'Open Issues', red),
+      const SizedBox(width: 10),
+      statCard(s.resolved.toString(), 'Resolved', greenLight)
+    ],
+  );
+}
+Widget statCard(String value,String label,Color valueColor){
+  return Expanded(
+    child:Container(
+      padding: const EdgeInsets.symmetric(vertical: 18,horizontal: 10),
+      decoration: BoxDecoration(
+        color: surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: border)
+      ),
+      child: Column(
+        children: [
+          Text(value,style: TextStyle(color: valueColor,fontSize: 28,fontWeight: FontWeight.w900)),
+          const SizedBox(height: 5),
+          Text(label,textAlign: TextAlign.center,style: TextStyle(color: text3,fontSize: 11,height: 1.3)),
+        ],
+      ),
+    ) 
+    );
+}
+Widget buildQuickActions(){
+  final actions = [
+    {'label': 'Request\nDoc',   'route': '/request-doc'},
+    {'label': 'Report\nIssue',  'route': '/report-issue'},
+    {'label': 'Appointment',    'route': '/appointments'},
+    {'label': 'Proposals',      'route': '/proposals'},
+  ];
+   return Row(
+      children: actions.map((a) {
+        return Expanded(  
+          child: GestureDetector(
+            onTap: () => Navigator.pushNamed(context, a['route']!),
+            child: Container(
+              margin: EdgeInsets.only(
+                  right: a == actions.last ? 0 : 10),
+              padding: const EdgeInsets.symmetric(
+                  vertical: 18, horizontal: 6),
+              decoration: BoxDecoration(
+                color: surface,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: border),
+              ),
+              child: Text(a['label']!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          color: text2,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          height: 1.3)),
+            ),
+          ),
+        );
+      }).toList(),
+    );
+}
+Widget buildBottomNav(){
+  const items = [
+    {'label': 'Home'},
+    {'label': 'Map'},
+    {'label': 'Requests'},
+    {'label': 'Proposals'},
+    {'label': 'Profile'},
+  ];
+   return Container(
+      decoration: const BoxDecoration(
+        color: Color(0xFF0D1710),
+        border: Border(top: BorderSide(color: Color(0xFF1E3A24))),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          child: Row(
+            children: List.generate(items.length, (i) {
+              final active = i == navIndex;
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() => navIndex = i);
+                    const routes = [
+                      '/home', '/map', '/requests',
+                      '/proposals', '/profile'
+                    ];
+                    if (i != 0) {
+                      Navigator.pushNamed(context, routes[i]);
+                    }
+                  },
+                  behavior: HitTestBehavior.opaque,
+                  child: Text(
+                        items[i]['label'] as String,
+                        style: TextStyle(
+                          color: active ? greenLight : text3,
+                          fontSize: 10,
+                          fontWeight: active
+                              ? FontWeight.w700
+                              : FontWeight.w500,
+                        ),
+                      ),
+                ),
+              );
+            }),
+          ),
+        ),
+      ),
+    );
 }
 }
