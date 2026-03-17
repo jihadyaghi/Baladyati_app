@@ -113,6 +113,10 @@ Widget buildContent(){
         const SizedBox(height: 10),
         buildMunicipalityCard(d.municipality),
         const SizedBox(height: 22),
+        sectionlabel('QUICK ACTIONS'),
+        const SizedBox(height: 10),
+        buildQuickActions(),
+        const SizedBox(height: 24),
         sectionlabel('NEXT WASTE COLLECTION'),
         const SizedBox(height: 10),
         buildWasteCard(d.wasteSchedule),
@@ -121,10 +125,6 @@ Widget buildContent(){
         const SizedBox(height: 10),
         buildStatsRow(d.stats),
         const SizedBox(height: 22),
-        sectionlabel('QUICK ACTIONS'),
-        const SizedBox(height: 10),
-        buildQuickActions(),
-        const SizedBox(height: 24),
       ],
     ),
      );
@@ -150,7 +150,29 @@ Widget buildHeader(HomeData d){
           ],
         ) 
         ),
-        GestureDetector(
+        Row(
+          children: [
+            GestureDetector(
+              onTap: (){
+                Navigator.pushNamed(context, '/about');
+              },
+              child: Container(
+                width: 44,
+                height: 44,
+                margin: const EdgeInsets.only(right: 8),
+                decoration: BoxDecoration(
+                  color: surface2,
+                  borderRadius: BorderRadius.circular(13),
+                  border: Border.all(color: border)
+                ),
+                child: const Icon(
+                  Icons.info_outline_rounded,
+                  color: text2,
+                  size: 22,
+                ),
+              ),
+            ),
+            GestureDetector(
           onTap: ()=>Navigator.pushNamed(context, ''),
           child: Stack(
             children: [
@@ -178,6 +200,8 @@ Widget buildHeader(HomeData d){
                 )
             ],
           ),
+        )
+          ],
         )
     ],
   );
@@ -402,33 +426,54 @@ Widget statCard(String value,String label,Color valueColor){
 }
 Widget buildQuickActions(){
   final actions = [
-    {'label': 'Request\nDoc',   'route': '/request-doc'},
-    {'label': 'Report\nIssue',  'route': '/report-issue'},
-    {'label': 'Appointment',    'route': '/appointments'},
-    {'label': 'Proposals',      'route': '/proposals'},
+    {'label': 'Request Doc','icon':Icons.description_rounded,'route': '/requests'},
+    {'label': 'Report Issue','icon':Icons.report_problem_rounded, 'route': '/report-issue'},
+    {'label': 'Appointment','icon':Icons.calendar_month_rounded,    'route': '/appointments'},
+    {'label': 'Proposals', 'icon':Icons.how_to_vote_rounded,     'route': '/proposals'},
   ];
    return Row(
       children: actions.map((a) {
         return Expanded(  
           child: GestureDetector(
-            onTap: () => Navigator.pushNamed(context, a['route']!),
+            onTap: () => Navigator.pushNamed(context, a['route'] as String),
             child: Container(
               margin: EdgeInsets.only(
                   right: a == actions.last ? 0 : 10),
               padding: const EdgeInsets.symmetric(
-                  vertical: 18, horizontal: 6),
+                  vertical: 16, horizontal: 6),
               decoration: BoxDecoration(
                 color: surface,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: border),
               ),
-              child: Text(a['label']!,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          color: text2,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          height: 1.3)),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: surface2,
+                      borderRadius: BorderRadius.circular(10)
+                    ),
+                    child: Icon(
+                      a['icon'] as IconData,
+                      color: greenLight,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    a['label'] as String,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: text2,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600
+                    ),
+                  )
+                ],
+              )
             ),
           ),
         );
@@ -437,11 +482,9 @@ Widget buildQuickActions(){
 }
 Widget buildBottomNav(){
   const items = [
-    {'label': 'Home'},
-    {'label': 'Map'},
-    {'label': 'Requests'},
-    {'label': 'Proposals'},
-    {'label': 'Profile'},
+    {'label': 'Home', 'icon':Icons.home_rounded},
+    {'label': 'Requests', 'icon':Icons.description_rounded},
+    {'label': 'Profile', 'icon':Icons.person_rounded},
   ];
    return Container(
       decoration: const BoxDecoration(
@@ -460,24 +503,34 @@ Widget buildBottomNav(){
                   onTap: () {
                     setState(() => navIndex = i);
                     const routes = [
-                      '/home', '/map', '/requests',
-                      '/proposals', '/profile'
+                      '/home',  '/requests', '/profile'
                     ];
                     if (i != 0) {
                       Navigator.pushNamed(context, routes[i]);
                     }
                   },
                   behavior: HitTestBehavior.opaque,
-                  child: Text(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        items[i]['icon'] as IconData,
+                        color: active ? greenLight : text3,
+                        size: 24,
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
                         items[i]['label'] as String,
                         style: TextStyle(
                           color: active ? greenLight : text3,
-                          fontSize: 10,
+                          fontSize: 11,
                           fontWeight: active
                               ? FontWeight.w700
                               : FontWeight.w500,
                         ),
                       ),
+                    ],
+                  )
                 ),
               );
             }),

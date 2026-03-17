@@ -1,4 +1,3 @@
-
 class WasteEntry{
 final String dayOfWeek;
 final String pickupTime;

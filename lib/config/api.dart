@@ -6,5 +6,6 @@ class Api {
   static const String logout='$baseUrl/api/auth/citizen/logout';
   static const String zones    = '$baseUrl/api/auth/zones';
   static const String home = '$baseUrl/api/home';
+  static const String requests = '$baseUrl/api/requests';
   static const Duration timeout = Duration(seconds: 15);
 }
