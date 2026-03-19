@@ -173,7 +173,7 @@ Widget buildHeader(HomeData d){
               ),
             ),
             GestureDetector(
-          onTap: ()=>Navigator.pushNamed(context, ''),
+          onTap: ()=>Navigator.pushNamed(context, '/notifications'),
           child: Stack(
             children: [
               Container(
