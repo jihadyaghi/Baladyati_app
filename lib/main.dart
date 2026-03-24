@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/pages/appointments/appointments_page.dart';
 import 'package:frontend/pages/auth/login_page.dart';
 import 'package:frontend/pages/auth/register_page.dart';
 import 'package:frontend/pages/home_page.dart';
@@ -78,7 +79,8 @@ class MyApp extends StatelessWidget {
         '/home': (_)=>const HomePagee(),
         '/register': (_)=>const RegisterPagee(),
         '/requests': (_)=>const RequestsPage(),
-        '/notifications': (_)=> const NotificationPage()
+        '/notifications': (_)=> const NotificationPage(),
+        '/appointments': (_)=> const AppointmentsPage()
        },
     );
   }
