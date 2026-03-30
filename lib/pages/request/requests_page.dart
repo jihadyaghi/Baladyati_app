@@ -38,12 +38,10 @@ class _RequestsPageState extends State<RequestsPage> with SingleTickerProviderSt
   static const Color surface = Color(0xFF111A13);
   static const Color surface2 = Color(0xFF162B1C);
   static const Color green = Color(0xFF2D9B5A);
-  static const Color greenLight = Color(0xFF3DBD71);
   static const Color border = Color(0xFF1E3A24);
   static const Color text1 = Color(0xFFF0F0F0);
   static const Color text2 = Color(0xFFA8C4AF);
   static const Color text3 = Color(0xFF5A7A62);
-  static const Color red = Color(0xFFE05252);
   @override
   void initState(){
     super.initState();

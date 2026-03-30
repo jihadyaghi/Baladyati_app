@@ -4,6 +4,8 @@ import 'package:frontend/pages/auth/login_page.dart';
 import 'package:frontend/pages/auth/register_page.dart';
 import 'package:frontend/pages/home_page.dart';
 import 'package:frontend/pages/notification_page.dart';
+import 'package:frontend/pages/proposals/proposals_page.dart';
+import 'package:frontend/pages/report_issue_page.dart';
 import 'package:frontend/pages/request/requests_page.dart';
 import 'package:frontend/providers/auth_provider.dart';
 import 'package:frontend/services/auth_service.dart';
@@ -80,7 +82,9 @@ class MyApp extends StatelessWidget {
         '/register': (_)=>const RegisterPagee(),
         '/requests': (_)=>const RequestsPage(),
         '/notifications': (_)=> const NotificationPage(),
-        '/appointments': (_)=> const AppointmentsPage()
+        '/appointments': (_)=> const AppointmentsPage(),
+        '/proposals': (_)=> const ProposalsPage(),
+        '/issues': (_)=> const ReportIssuePage()
        },
     );
   }

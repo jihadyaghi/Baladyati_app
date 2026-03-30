@@ -427,9 +427,9 @@ Widget statCard(String value,String label,Color valueColor){
 Widget buildQuickActions(){
   final actions = [
     {'label': 'Request Doc','icon':Icons.description_rounded,'route': '/requests'},
-    {'label': 'Report Issue','icon':Icons.report_problem_rounded, 'route': '/report-issue'},
+    {'label': 'Report Issue','icon':Icons.report_problem_rounded, 'route': '/issues'},
     {'label': 'Appointment','icon':Icons.calendar_month_rounded,    'route': '/appointments'},
-    {'label': 'Proposals', 'icon':Icons.how_to_vote_rounded,     'route': '/proposals'},
+    {'label': 'Proposals', 'icon':Icons.how_to_vote_rounded,     'route': '/proposals'},//proposals
   ];
    return Row(
       children: actions.map((a) {

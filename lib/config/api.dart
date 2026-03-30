@@ -9,5 +9,7 @@ class Api {
   static const String requests = '$baseUrl/api/requests';
   static const String notifications = '$baseUrl/api/notifications';
   static const String appointments = '$baseUrl/api/appointments';
+  static const String proposals = '$baseUrl/api/proposals';
+  static const String issues = '$baseUrl/api/issues';
   static const Duration timeout = Duration(seconds: 15);
 }
