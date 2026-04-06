@@ -11,5 +11,7 @@ class Api {
   static const String appointments = '$baseUrl/api/appointments';
   static const String proposals = '$baseUrl/api/proposals';
   static const String issues = '$baseUrl/api/issues';
+  static const String chat = '$baseUrl/api/chat';
+  static const String profile = '$baseUrl/api/profile';
   static const Duration timeout = Duration(seconds: 15);
 }

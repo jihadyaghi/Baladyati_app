@@ -64,6 +64,14 @@ class _HomePageState extends State<HomePagee> {
         child: loading ? buildLoding() : error != null ? buildError() : buildContent()
         ),
         bottomNavigationBar: buildBottomNav(),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: green,
+          elevation: 3,
+          child: const Icon(Icons.smart_toy_rounded, color: Colors.white,),
+          onPressed: (){
+            Navigator.pushNamed(context, '/chat');
+          }
+          ),
     );
   }
   Widget buildLoding() => const Center(
@@ -154,7 +162,7 @@ Widget buildHeader(HomeData d){
           children: [
             GestureDetector(
               onTap: (){
-                Navigator.pushNamed(context, '/about');
+                Navigator.pushNamed(context, '/info');
               },
               child: Container(
                 width: 44,
